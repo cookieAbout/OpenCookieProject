@@ -36,6 +36,7 @@ except Exception as e:
 register_handlers(dp)
 logger.info("Обработчики команд зарегистрированы")
 
+
 # Запуск бота
 async def main():
     try:
