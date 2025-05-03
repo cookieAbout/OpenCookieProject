@@ -1,3 +1,4 @@
+""" CRUD-фасад (ввод-вывод информации в ТГ-боте """
 from sqlalchemy.orm import Session
 from .models import Book, Quote
 
@@ -11,11 +12,13 @@ def create_book(db: Session, title: str, author: str = None):
     return book
 
 
-def get_books(db: Session):
+def get_book_list(db: Session):
+    """ Получить список книг """
     return db.query(Book).all()
 
 
 def get_book(db: Session, book_id: int):
+    """ Получить конкретную книгу"""
     return db.query(Book).filter(Book.id == book_id).first()
 
 
@@ -38,10 +41,12 @@ def create_quote(db: Session, book_id: int, text: str):
 
 
 def get_quotes_by_book(db: Session, book_id: int):
+    """ Получить цитаты по конкретной книге """
     return db.query(Quote).filter(Quote.book_id == book_id).all()
 
 
 def delete_quote(db: Session, quote_id: int):
+    """ Удалить цитаты """
     quote = db.query(Quote).filter(Quote.id == quote_id).first()
     if quote:
         db.delete(quote)

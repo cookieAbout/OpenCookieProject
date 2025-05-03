@@ -19,8 +19,8 @@ logger = logging.getLogger(__name__)
 try:
     Base.metadata.create_all(bind=engine)
     logger.info("База данных успешно инициализирована")
-except Exception as e:
-    logger.error(f"Ошибка при инициализации базы данных: {e}")
+except Exception as exept:
+    logger.error(f"Ошибка при инициализации базы данных: {exept}")
     raise
 
 # Инициализация бота и диспетчера
@@ -29,8 +29,8 @@ try:
     storage = MemoryStorage()
     dp = Dispatcher(bot, storage=storage)
     logger.info("Бот успешно инициализирован")
-except Exception as e:
-    logger.error(f"Ошибка при инициализации бота: {e}")
+except Exception as exept:
+    logger.error(f"Ошибка при инициализации бота: {exept}")
     raise
 
 # Регистрация обработчиков
@@ -43,8 +43,8 @@ async def main():
     try:
         logger.info("Бот запущен")
         await dp.start_polling()
-    except Exception as e:
-        logger.error(f"Ошибка при работе бота: {e}")
+    except Exception as exept:
+        logger.error(f"Ошибка при работе бота: {exept}")
     finally:
         await bot.close()
         logger.info("Бот остановлен")
@@ -54,5 +54,5 @@ if __name__ == "__main__":
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
         logger.info("Бот остановлен пользователем")
-    except Exception as e:
-        logger.error(f"Неожиданная ошибка: {e}") 
+    except Exception as exept:
+        logger.error(f"Неожиданная ошибка: {exept}")

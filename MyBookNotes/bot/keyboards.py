@@ -1,8 +1,8 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
 
-# Клавиатура для основных команд
 def get_main_keyboard():
+    """ Клавиатура для основных команд """
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.add(KeyboardButton("/start"))
     keyboard.add(KeyboardButton("/help"))
@@ -15,8 +15,8 @@ def get_main_keyboard():
     return keyboard
 
 
-# Инлайн-клавиатура для выбора книги
 def get_books_inline_keyboard(books):
+    """ Инлайн-клавиатура для выбора книги """
     keyboard = InlineKeyboardMarkup()
     for book in books:
         keyboard.add(
@@ -27,8 +27,8 @@ def get_books_inline_keyboard(books):
     return keyboard
 
 
-# Инлайн-клавиатура для выбора цитаты
 def get_quotes_inline_keyboard(quotes):
+    """ Инлайн-клавиатура для выбора цитаты """
     keyboard = InlineKeyboardMarkup()
     for quote in quotes:
         keyboard.add(InlineKeyboardButton(f"Цитата {quote.id}", callback_data=f"quote_{quote.id}"))

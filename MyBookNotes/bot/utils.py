@@ -1,5 +1,5 @@
 from aiogram import types
-from database.crud import get_books, get_quotes_by_book
+from database.crud import get_book_list, get_quotes_by_book
 from .keyboards import get_books_inline_keyboard, get_quotes_inline_keyboard
 from database.session import get_db
 
@@ -7,7 +7,7 @@ from database.session import get_db
 # Функция для отправки списка книг с инлайн-клавиатурой
 async def send_books_list(message: types.Message):
     db = next(get_db())
-    books = get_books(db)
+    books = get_book_list(db)
     if not books:
         await message.answer("У вас пока нет книг.")
         return

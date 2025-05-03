@@ -1,8 +1,11 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from database.crud import create_book, get_books, get_book, delete_book, create_quote, get_quotes_by_book, delete_quote
+from database.crud import (
+    create_book, get_book_list, get_book, delete_book, create_quote, get_quotes_by_book, delete_quote
+)
 from database.session import get_db
+from .utils import send_books_list
 
 
 # Состояния для FSM
@@ -64,7 +67,7 @@ async def process_book_author(message: types.Message, state: FSMContext):
 # Обработчик команды /list_books
 async def cmd_list_books(message: types.Message):
     db = next(get_db())
-    books = get_books(db)
+    books = get_book_list(db)
     if not books:
         await message.answer("У вас пока нет книг.")
         return
@@ -96,25 +99,25 @@ async def process_book_id(message: types.Message):
 # Обработчик команды /add_quote
 async def cmd_add_quote(message: types.Message):
     await QuoteState.waiting_for_book.set()
-    await message.answer("Введите ID книги:")
+    await send_books_list(message)
 
 
-# Обработчик ввода ID книги для цитаты
-async def process_quote_book(message: types.Message, state: FSMContext):
-    try:
-        book_id = int(message.text)
-        db = next(get_db())
-        book = get_book(db, book_id)
-        if not book:
-            await message.answer("Книга не найдена.")
-            await state.finish()
-            return
-        async with state.proxy() as data:
-            data['book_id'] = book_id
-        await QuoteState.waiting_for_text.set()
-        await message.answer("Введите текст цитаты:")
-    except ValueError:
-        await message.answer("Пожалуйста, введите корректный ID книги.")
+# Обработчик callback-запроса от инлайн-клавиатуры для выбора книги
+async def process_book_selection(callback_query: types.CallbackQuery, state: FSMContext):
+    book_id = int(callback_query.data.split('_')[1])
+    db = next(get_db())
+    book = get_book(db, book_id)
+    if not book:
+        await callback_query.message.answer("Книга не найдена.")
+        await state.finish()
+        return
+    
+    async with state.proxy() as data:
+        data['book_id'] = book_id
+    
+    await QuoteState.waiting_for_text.set()
+    await callback_query.message.answer("Введите текст цитаты:")
+    await callback_query.answer()
 
 
 # Обработчик ввода текста цитаты
@@ -166,16 +169,23 @@ async def process_delete_quote(message: types.Message):
 def register_handlers(dp: Dispatcher):
     dp.register_message_handler(cmd_start, commands=["start"])
     dp.register_message_handler(cmd_help, commands=["help"])
+
     dp.register_message_handler(cmd_add_book, commands=["add_book"])
     dp.register_message_handler(process_book_title, state=BookState.waiting_for_title)
     dp.register_message_handler(process_book_author, state=BookState.waiting_for_author)
+
     dp.register_message_handler(cmd_list_books, commands=["list_books"])
     dp.register_message_handler(cmd_book_info, commands=["book_info"])
     dp.register_message_handler(process_book_id)
+
     dp.register_message_handler(cmd_add_quote, commands=["add_quote"])
-    dp.register_message_handler(process_quote_book, state=QuoteState.waiting_for_book)
+    dp.register_callback_query_handler(
+        process_book_selection, lambda c: c.data.startswith('book_'), state=QuoteState.waiting_for_book
+    )
     dp.register_message_handler(process_quote_text, state=QuoteState.waiting_for_text)
+
     dp.register_message_handler(cmd_delete_book, commands=["delete_book"])
     dp.register_message_handler(process_delete_book)
+
     dp.register_message_handler(cmd_delete_quote, commands=["delete_quote"])
     dp.register_message_handler(process_delete_quote)
