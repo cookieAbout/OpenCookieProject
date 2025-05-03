@@ -42,6 +42,8 @@ Telegram-бот для сохранения цитат, тезисов и мыс
 1. Соберите Docker-образ:
    ```bash
    docker build -t mybooknotes .
+#   docker stop mybooknotes
+#   docker rm mybooknotes
    ```
 
 2. Запустите контейнер:

@@ -1,6 +1,8 @@
 from aiogram import types
 from database.crud import get_books, get_quotes_by_book
 from .keyboards import get_books_inline_keyboard, get_quotes_inline_keyboard
+from database.session import get_db
+
 
 # Функция для отправки списка книг с инлайн-клавиатурой
 async def send_books_list(message: types.Message):
@@ -11,6 +13,7 @@ async def send_books_list(message: types.Message):
         return
     keyboard = get_books_inline_keyboard(books)
     await message.answer("Выберите книгу:", reply_markup=keyboard)
+
 
 # Функция для отправки списка цитат с инлайн-клавиатурой
 async def send_quotes_list(message: types.Message, book_id: int):

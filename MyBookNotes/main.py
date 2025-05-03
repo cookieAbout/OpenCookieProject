@@ -1,3 +1,4 @@
+""" Модуль запуска тг-бота MyBookNotes """
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher

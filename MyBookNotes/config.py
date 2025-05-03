@@ -1,3 +1,4 @@
+""" Настройки """
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 
@@ -15,7 +16,7 @@ class Settings(BaseSettings):
     # Настройки для бота
     BOT_ADMINS: list[int] = []  # Список ID администраторов
     BOT_PREFIX: str = "/"  # Префикс для команд
-    BOT_NAME: str = "BookNotesBot"  # Имя бота
+    BOT_NAME: str = "MyBookNotes"  # Имя бота
 
     # Настройки для логирования
     LOG_LEVEL: str = "INFO"
