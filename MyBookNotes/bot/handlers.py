@@ -51,7 +51,7 @@ async def process_book_title(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['title'] = message.text
     await BookState.waiting_for_author.set()
-    await message.answer("Введите автора книги (или пропустите):")
+    await message.answer("Введите автора книги:")
 
 
 # Обработчик ввода автора книги
