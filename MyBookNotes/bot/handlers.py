@@ -50,7 +50,7 @@ async def cmd_add_book(message: types.Message):
 async def process_book_title(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['title'] = message.text
-    await BookState.waiting_for_author.set()
+        await BookState.waiting_for_author.set()
     await message.answer("Введите автора книги:")
 
 
